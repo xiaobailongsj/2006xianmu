@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 id="date"></h1>
+<h2>点击查询天气</h2>
+<button class="but" data_id="101050703">漠河</button>
+<button class="but" data_id="101020100">上海</button>
+<button class="but" data_id="101280101">广州</button>
+<button class="but" data_id="101310201">三亚</button>
+<hr>
+<table>
+    <tr>
+        <td>城市</td>
+        <td><input type="text" readonly id="e"></td>
+    </tr>
+    <tr>
+        <td>天气</td>
+        <td><input type="text" readonly id="f"></td>
+    </tr>
+    <tr>
+        <td>温度</td>
+        <td><input type="text" readonly id="g"></td>
+    </tr>
+    <tr>
+        <td>风力</td>
+        <td><input type="text" readonly id="h"></td>
+    </tr>
+</table>
+<script src="jquery-3.5.1.min.js"></script>
+<script>
+    setInterval(function () {
+        var arr= ['周日','周一','周二','周三','周四','周五','周六']
+        var date= new Date();
+        var year=date.getFullYear()//年
+
+        var datas = date.getDate()//日
+        if(datas<10){
+            datas ="0"+datas
+        }
+        var day = date.getDay()//周
+        var month= date.getMonth()+1//月
+        if(month<10){
+            month ="0"+month
+        }
+        // console.log(month)
+        var hours = date.getHours()//时
+        if(hours<10){
+            hours ="0"+hours
+        }
+        var minutess = date.getMinutes()//分
+        if(minutess<10){
+            minutess ="0"+minutess
+        }
+        var secondss = date.getSeconds()//秒
+        if(secondss<10){
+            secondss ="0"+secondss
+        }
+        var time=year+"-"+month+"-"+datas+"  "+hours+":"+minutess+":"+secondss+" "+arr[day];
+        var time1=document.getElementById('date')
+        time1.innerText=time
+    },1000)
+$('.but').on('click',function () {
+    var id =  $(this).attr('data_id')
+    var text = $(this).text()
+    $.ajax({
+        url:"http://api.2006.com/api.php",
+        method:'POST',
+        dataType:'json',
+        data:{id:id}
+    }).done(function (d) {
+        console.log(d)
+        $('#e').val(text)
+        $('#f').val(d.now.text)
+        $('#g').val(d.now.temp+'℃')
+        $('#h').val(d.now.windScale+'级')
+    })
+})
+</script>
+</body>
+</html>
